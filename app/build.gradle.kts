@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.compose.ui.text.google.fonts)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,4 +62,7 @@ dependencies {
 
     // jsoup HTML parser library @ https://jsoup.org/
     implementation (libs.jsoup)
+
+    // Lottie
+    implementation ("com.airbnb.android:lottie-compose:6.7.0")
 }

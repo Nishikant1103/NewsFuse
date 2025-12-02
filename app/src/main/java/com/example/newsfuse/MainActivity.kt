@@ -10,15 +10,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.NewsFuseTheme
+import com.example.newsfuse.core.utility.NetworkStatusLiveData
+import com.example.newsfuse.view.components.EmptyState
 import com.example.newsfuse.view.newslist.NewsListScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val networkStatusLiveData = NetworkStatusLiveData.getInstance(applicationContext)
         enableEdgeToEdge()
         setContent {
             NewsFuseTheme {
@@ -27,7 +32,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        NewsListScreen(paddingValues = innerPadding)
+                        val networkStatusLiveDataState =
+                            networkStatusLiveData.observeAsState(initial = false)
+                        if (networkStatusLiveDataState.value) {
+                            NewsListScreen(paddingValues = innerPadding)
+                        } else {
+                            EmptyState(R.raw.no_internet, "No Internet Connection", "Please check your network settings and try again." )
+                        }
                     }
                 }
             }
