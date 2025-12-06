@@ -1,12 +1,13 @@
 package com.example.newsfuse.datasource.repository
 
+import com.example.newsfuse.core.Injector
 import com.example.newsfuse.datasource.data.News
 import com.example.newsfuse.datasource.remote.NewsDataSource
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class NewsRepository(val newsDataSource: NewsDataSource = NewsDataSource()) {
+class NewsRepository(private val newsDataSource: NewsDataSource = Injector.newsDataSource) {
     companion object {
         private const val SAMPLE_URL =
             "https://www.thehindu.com/feeder/default.rss" //TODO: Remove this hard coded URL

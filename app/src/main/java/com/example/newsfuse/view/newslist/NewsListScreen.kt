@@ -17,14 +17,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import com.example.akhbaar.ui.theme.LocalAppDimensions
+import com.example.newsfuse.core.Injector
 
 @Composable
 fun NewsListScreen(
-    viewModel: NewsListViewModel = NewsListViewModel(),
+    viewModel: NewsListViewModel = Injector.newsListViewModel,
     paddingValues: PaddingValues
 ) {
     val newsListState = viewModel.getNewsListLD.observeAsState()
