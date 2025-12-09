@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
 }
 
 android {
@@ -61,8 +62,15 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // jsoup HTML parser library @ https://jsoup.org/
-    implementation (libs.jsoup)
+    implementation(libs.jsoup)
 
     // Lottie
-    implementation ("com.airbnb.android:lottie-compose:6.7.0")
+    implementation(libs.lottie.compose)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+
+    // Work Manager
+    implementation(libs.androidx.work.runtime.ktx)
 }

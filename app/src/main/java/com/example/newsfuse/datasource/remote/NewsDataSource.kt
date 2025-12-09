@@ -32,7 +32,7 @@ class NewsDataSource {
             datePosted = element.allElements.select("pubDate").text(),
             newsTitle = element.allElements.select("title").text(),
             newsDescription = element.allElements.select("description").text(),
-            newsLink = element.allElements.select("link").text()
+            newsLink = element.allElements.select("link").text(),
         )
     }
 }
