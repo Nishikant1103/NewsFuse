@@ -22,4 +22,6 @@ class NewsRepository(
                 )
             }.toSet()
         }
+
+    suspend fun getNewsById(newsId: String) = newsDao.getNewsEntityById(newsId)
 }

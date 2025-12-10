@@ -23,7 +23,8 @@ import com.example.newsfuse.core.Injector
 
 @Composable
 fun NewsListScreen(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onNewsItemClicked: (newsId: String) -> Unit = {}
 ) {
     // Get context to pass to Injector
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -48,7 +49,7 @@ fun NewsListScreen(
                     )
                     .clickable(
                         onClick = {
-                            //TODO: Handle news item click
+                            onNewsItemClicked(news.id)
                         }
                     ),
                 colors = cardColors(

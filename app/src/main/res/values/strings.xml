@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NewsFuse</string>
+    <string name="empty_description">&lt;--Empty Description--&gt;</string>
+    <string name="go_to_article">Go to the Article</string>
 </resources>

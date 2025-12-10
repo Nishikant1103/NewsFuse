@@ -19,6 +19,9 @@ interface NewsDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNewsEntities(newsList: List<NewsEntity>)
 
+    @Query("Select * from NewsEntity WHERE id = :newsId")
+    suspend fun getNewsEntityById(newsId: String): NewsEntity
+
     @Transaction
     suspend fun refreshNewsEntities(newsList: List<NewsEntity>) {
         deleteAllNewsEntities()

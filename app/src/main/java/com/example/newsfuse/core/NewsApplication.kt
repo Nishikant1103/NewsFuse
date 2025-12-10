@@ -54,12 +54,6 @@ class NewsApplication : Application() {
             ExistingPeriodicWorkPolicy.KEEP, // Don't replace if already running
             periodicWorkRequest
         )
-
-        WorkManager.getInstance(this)
-            .getWorkInfosForUniqueWorkLiveData(NEWS_SYNC_WORK_TAG)
-            .observeForever {
-                Log.e("Nishi", it.toString())
-            }
     }
 }
 

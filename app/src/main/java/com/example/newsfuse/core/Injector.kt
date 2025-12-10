@@ -1,13 +1,11 @@
 package com.example.newsfuse.core
 
 import android.content.Context
-import androidx.work.WorkerParameters
 import com.example.newsfuse.datasource.local.db.NewsDatabase
 import com.example.newsfuse.datasource.local.db.dao.NewsDao
-import com.example.newsfuse.datasource.remote.NewsDataSource
 import com.example.newsfuse.datasource.repository.NewsRepository
+import com.example.newsfuse.view.newsdetail.NewsDetailViewModel
 import com.example.newsfuse.view.newslist.NewsListViewModel
-import com.example.newsfuse.workers.NewsProviderWorker
 
 class Injector {
     companion object {
@@ -28,6 +26,10 @@ class Injector {
 
         fun getNewsListViewModel(context: Context): NewsListViewModel {
             return NewsListViewModel(getNewsRepository(context))
+        }
+
+        fun getNewsDetailViewModel(context: Context): NewsDetailViewModel {
+            return NewsDetailViewModel(getNewsRepository(context))
         }
     }
 }

@@ -54,7 +54,6 @@ class NewsProviderWorker(
                 }
             }
         } catch (e: Exception) {
-            Log.e("Nishi", "ERROR in doWork", e)
             Result.failure()
         }
     }
