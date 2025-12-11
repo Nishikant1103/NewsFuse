@@ -15,16 +15,8 @@ class NewsDetailViewModel(private val repository: NewsRepository) : ViewModel() 
 
     fun fetchNewsDetail(newsId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val newsEntity = repository.getNewsById(newsId)
-            newsEntity.let {
-                val news = News(
-                    id = it.id,
-                    datePosted = it.datePosted,
-                    newsTitle = it.newsTitle,
-                    newsDescription = it.newsDescription,
-                    newsLink = it.newsLink,
-                    newsImage = it.newsImage
-                )
+            val news = repository.getNewsById(newsId)
+            news.let {
                 _getNewsDetail.postValue(news)
             }
         }

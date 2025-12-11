@@ -1,6 +1,7 @@
 package com.example.newsfuse.core
 
 import android.content.Context
+import com.example.newsfuse.core.utility.TimeFormatter
 import com.example.newsfuse.datasource.local.db.NewsDatabase
 import com.example.newsfuse.datasource.local.db.dao.NewsDao
 import com.example.newsfuse.datasource.repository.NewsRepository
@@ -20,7 +21,8 @@ class Injector {
 
         private fun getNewsRepository(context: Context): NewsRepository {
             return NewsRepository(
-                newsDao = getNewsDao(context)
+                newsDao = getNewsDao(context),
+                timeFormatter = TimeFormatter()
             )
         }
 
