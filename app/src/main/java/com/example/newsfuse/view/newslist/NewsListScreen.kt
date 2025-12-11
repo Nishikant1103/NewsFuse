@@ -58,13 +58,12 @@ fun NewsListScreen(
             ) {
                 Text(
                     text = news.newsTitle,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(LocalAppDimensions.dimenLarge),
                     textAlign = TextAlign.Start,
                     color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = FontFamily.SansSerif
                 )
                 Text(
                     text = news.datePosted,

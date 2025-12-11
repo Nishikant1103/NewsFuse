@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.compose.NewsFuseTheme
+import com.example.newsfuse.core.ui.theme.NewsFuseTheme
 import com.example.newsfuse.core.utility.NetworkStatusLiveData
 import com.example.newsfuse.view.components.EmptyState
 import com.example.newsfuse.view.newsdetail.NewsDetailScreen

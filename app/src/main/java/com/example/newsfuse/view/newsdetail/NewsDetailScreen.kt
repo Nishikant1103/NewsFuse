@@ -24,15 +24,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import com.example.akhbaar.ui.theme.LocalAppDimensions
-import com.example.compose.NewsFuseTheme
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
+import com.example.newsfuse.core.ui.theme.NewsFuseTheme
 import com.example.newsfuse.datasource.data.News
 
 
@@ -60,10 +59,9 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenMedium),
+                .padding(LocalAppDimensions.dimenLarge),
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.onSurface,
-            fontFamily = FontFamily.SansSerif
         )
 
         val newsDescription =
@@ -71,19 +69,18 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
 
         Text(
             text = newsDescription ?: "",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(horizontal = LocalAppDimensions.dimenLarge),
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.onSurface,
-            fontFamily = FontFamily.SansSerif
         )
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Icon(
                 painter = painterResource(id = R.drawable.open_news_article_in_browser),
                 contentDescription = "",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .size(LocalAppDimensions.dimenBig + LocalAppDimensions.dimenLarge)
                     .align(Alignment.CenterHorizontally)
