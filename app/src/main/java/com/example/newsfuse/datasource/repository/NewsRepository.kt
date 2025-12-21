@@ -31,6 +31,6 @@ class NewsRepository(
         newsTitle = entity.newsTitle,
         newsDescription = entity.newsDescription,
         newsLink = entity.newsLink,
-        newsImage = entity.newsImage
+        newsImageLink = entity.newsImage
     )
 }

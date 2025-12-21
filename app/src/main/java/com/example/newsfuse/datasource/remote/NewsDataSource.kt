@@ -33,6 +33,7 @@ class NewsDataSource {
             newsTitle = element.allElements.select("title").text(),
             newsDescription = element.allElements.select("description").text(),
             newsLink = element.allElements.select("link").text(),
+            newsImageLink = element.allElements.select("media\\:content").attr("url"),
         )
     }
 }

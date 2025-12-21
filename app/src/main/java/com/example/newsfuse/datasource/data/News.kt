@@ -9,5 +9,5 @@ data class News(
     val newsTitle: String = "",
     val newsDescription: String = "",
     val newsLink: String = "",
-    val newsImage: String = "",
+    val newsImageLink: String = "",
 )

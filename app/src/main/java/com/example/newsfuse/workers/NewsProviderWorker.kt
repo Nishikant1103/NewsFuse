@@ -2,7 +2,6 @@ package com.example.newsfuse.workers
 
 import com.example.newsfuse.datasource.local.db.dao.NewsDao
 import android.content.Context
-import android.util.Log
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.newsfuse.core.NewsApplication.Companion.RSS_FEED_URL_KEY
@@ -43,7 +42,7 @@ class NewsProviderWorker(
                                 newsTitle = newsItem.newsTitle,
                                 newsDescription = newsItem.newsDescription,
                                 newsLink = newsItem.newsLink,
-                                newsImage = newsItem.newsImage
+                                newsImage = newsItem.newsImageLink
                             )
                         }
                         newsDao.refreshNewsEntities(newsEntityList)

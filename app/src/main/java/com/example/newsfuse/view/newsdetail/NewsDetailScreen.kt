@@ -33,6 +33,7 @@ import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
 import com.example.newsfuse.core.ui.theme.NewsFuseTheme
 import com.example.newsfuse.datasource.data.News
+import coil.compose.AsyncImage
 
 
 @Composable
@@ -64,11 +65,8 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        val newsDescription =
-            if (newsDetail.value?.newsDescription == "") stringResource(R.string.empty_description) else newsDetail.value?.newsDescription
-
         Text(
-            text = newsDescription ?: "",
+            text = newsDetail.value?.newsDescription ?: "",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,6 +74,18 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.onSurface,
         )
+
+        AsyncImage(
+            model = newsDetail.value?.newsImageLink,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = LocalAppDimensions.dimenLarge,
+                    horizontal = LocalAppDimensions.dimenSmall
+                ), alignment = Alignment.Center
+        )
+
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Icon(
                 painter = painterResource(id = R.drawable.open_news_article_in_browser),
