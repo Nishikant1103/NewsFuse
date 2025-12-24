@@ -19,8 +19,9 @@ import com.example.newsfuse.R
 @Composable
 fun NFuseTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
-    navController: NavHostController,
-    showBackButton: Boolean
+    showBackButton: Boolean,
+    newsFeedClicked: () -> Unit,
+    navigateUp: () -> Unit,
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -39,7 +40,7 @@ fun NFuseTopAppBar(
         actions = {
             // Navigate to Feeds screen
             IconButton(onClick = {
-                navController.navigate(Routes.NewsFeeds)
+                newsFeedClicked()
             }) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_rss_feeds_logo),
@@ -51,7 +52,7 @@ fun NFuseTopAppBar(
         navigationIcon = {
             if (!showBackButton) null else {
                 IconButton(onClick = {
-                    navController.navigateUp()
+                    navigateUp()
                 }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_back_button),

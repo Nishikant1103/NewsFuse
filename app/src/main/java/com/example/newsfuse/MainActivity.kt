@@ -56,7 +56,17 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
-                            NFuseTopAppBar(scrollBehavior, navController, showBackButton)
+                            NFuseTopAppBar(
+                                scrollBehavior,
+                                showBackButton,
+                                newsFeedClicked = {
+                                    navController.navigate(Routes.NewsFeeds) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                navigateUp = {
+                                    navController.navigateUp()
+                                })
                         }
                     ) { innerPadding ->
                         val networkStatusLiveDataState =
