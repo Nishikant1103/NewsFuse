@@ -42,7 +42,7 @@ fun NewsFeedsScreen(paddingValues: PaddingValues) {
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues)) {
-        LazyColumn(state = scrollState, modifier = Modifier.padding(paddingValues)) {
+        LazyColumn(state = scrollState, modifier = Modifier.fillMaxSize()) {
             itemsIndexed(
                 feedsList.toList(),
                 key = { _, feeds -> feeds.hashCode() }) { _, feed ->
@@ -69,7 +69,7 @@ fun NewsFeedsScreen(paddingValues: PaddingValues) {
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(LocalAppDimensions.dimenBig),
             onClick = {
 
             },
