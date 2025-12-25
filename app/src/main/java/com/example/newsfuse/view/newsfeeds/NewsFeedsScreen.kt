@@ -1,6 +1,7 @@
 package com.example.newsfuse.view.newsfeeds
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,27 +39,52 @@ fun NewsFeedsScreen(paddingValues: PaddingValues) {
 
     val scrollState = rememberLazyListState()
 
-    LazyColumn(state = scrollState, modifier = Modifier.padding(paddingValues)) {
-        itemsIndexed(feedsList.toList(), key = { _, feeds -> feeds.hashCode() }) { _, feed ->
-            SwipeToDismiss(
-                item = feed,
-                itemComposable = { FeedsItem(feed) },
-                onEndToStartSwiped = {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(paddingValues)) {
+        LazyColumn(state = scrollState, modifier = Modifier.padding(paddingValues)) {
+            itemsIndexed(
+                feedsList.toList(),
+                key = { _, feeds -> feeds.hashCode() }) { _, feed ->
+                SwipeToDismiss(
+                    item = feed,
+                    itemComposable = { FeedsItem(feed) },
+                    onEndToStartSwiped = {
 
-                },
-                onStartToEndSwiped = {
+                    },
+                    onStartToEndSwiped = {
 
-                },
-                leftComposable = {
-                    LeftActionItem()
-                },
-                rightComposable = {
-                    RightActionItem()
-                },
+                    },
+                    leftComposable = {
+                        LeftActionItem()
+                    },
+                    rightComposable = {
+                        RightActionItem()
+                    },
+                )
+            }
+        }
+
+
+        FloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(LocalAppDimensions.dimenLarge),
+            onClick = {
+
+            },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = MaterialTheme.colorScheme.secondary
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "Add Feed",
+                tint = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
     }
 }
+
 
 @Composable
 fun LeftActionItem() {
