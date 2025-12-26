@@ -29,7 +29,10 @@ import com.example.newsfuse.datasource.data.NewsFeed
 import com.example.newsfuse.view.components.SwipeToDismiss
 
 @Composable
-fun NewsFeedsScreen(paddingValues: PaddingValues) {
+fun NewsFeedsScreen(
+    paddingValues: PaddingValues,
+    floatingActionClicked: () -> Unit
+) {
     // Implementation of the NewsFeedsScreen composable
     val feedsList = listOf<NewsFeed>(
         NewsFeed("Feed 1", "https://feed1.com"),
@@ -71,7 +74,7 @@ fun NewsFeedsScreen(paddingValues: PaddingValues) {
                 .align(Alignment.BottomEnd)
                 .padding(LocalAppDimensions.dimenBig),
             onClick = {
-
+                floatingActionClicked()
             },
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.secondary

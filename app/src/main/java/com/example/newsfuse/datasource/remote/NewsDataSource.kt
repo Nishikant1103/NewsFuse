@@ -1,5 +1,6 @@
 package com.example.newsfuse.datasource.remote
 
+import android.util.Log
 import com.example.newsfuse.datasource.data.News
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -13,17 +14,25 @@ class NewsDataSource {
     fun getNewsFromFeedUrl(rssFeedUrl: String): Result<Set<News>> {
         val newsSet = mutableSetOf<News>()
         val rssUrl = URL(rssFeedUrl)
-        val document: Document =
-            Jsoup.parse(rssUrl.openStream(), "UTF-8", "", Parser.xmlParser())
-        val itemElement: Elements = document.select("item")
+        try {
+            val document: Document =
+                Jsoup.parse(rssUrl.openStream(), "UTF-8", "", Parser.xmlParser())
+            val itemElement: Elements = document.select("item")
 
-        if (itemElement.isNotEmpty()) {
-            for (item in itemElement) {
-                newsSet.add(getNews(item))
+            if (itemElement.isNotEmpty()) {
+                for (item in itemElement) {
+                    newsSet.add(getNews(item))
+                }
+                return Result.success(newsSet)
+            } else {
+                return Result.failure(Exception("No news items found"))
             }
-            return Result.success(newsSet)
-        } else {
-            return Result.failure(Exception("No news items found"))
+        } catch (exception: Exception) {
+            Log.e(
+                "NewsDataSource::class",
+                "Failed to fetch news due to $exception exception"
+            )
+            return Result.failure(Exception(exception))
         }
     }
 

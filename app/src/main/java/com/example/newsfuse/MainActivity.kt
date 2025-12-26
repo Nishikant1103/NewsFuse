@@ -72,7 +72,9 @@ class MainActivity : ComponentActivity() {
                         val networkStatusLiveDataState =
                             networkStatusLiveData.observeAsState(initial = false)
                         if (networkStatusLiveDataState.value) {
-                            NFuseNavHost(navController, innerPadding)
+                            NFuseNavHost(navController, innerPadding, floatingActionClicked = {
+                                navController.navigate(Routes.AddFeed)
+                            })
                         } else {
                             EmptyState(
                                 R.raw.no_internet,
