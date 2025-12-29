@@ -18,7 +18,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.example.akhbaar.ui.theme.LocalAppDimensions
+import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 
 @Composable
 fun EmptyState(image: Int, title: String, message: String) {
@@ -43,7 +43,7 @@ fun EmptyState(image: Int, title: String, message: String) {
             composition = composition,
             progress = { progress },
             modifier = Modifier
-                .padding(LocalAppDimensions.dimenLarge)
+                .padding(LocalAppDimensions.dimen16)
         )
 
         Text(
@@ -51,7 +51,7 @@ fun EmptyState(image: Int, title: String, message: String) {
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface,
             fontFamily = FontFamily.SansSerif
@@ -61,7 +61,7 @@ fun EmptyState(image: Int, title: String, message: String) {
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

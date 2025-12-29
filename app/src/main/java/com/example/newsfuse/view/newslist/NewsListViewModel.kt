@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsfuse.datasource.data.News
+import com.example.newsfuse.datasource.local.db.entity.NewsFeedEntity
 import com.example.newsfuse.datasource.repository.NewsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class NewsListViewModel(private val repository: NewsRepository) : ViewModel() {
@@ -19,4 +21,14 @@ class NewsListViewModel(private val repository: NewsRepository) : ViewModel() {
     }
 
     val getNewsListLD: LiveData<Set<News>> = _getLatestNews
+
+    private val _getSelectedFeed = MutableLiveData<NewsFeedEntity?>(
+        null
+    ).apply {
+        viewModelScope.launch(Dispatchers.IO) {
+            postValue(repository.getSelectedFeed().first())
+        }
+    }
+
+    val getSelectedFeed: LiveData<NewsFeedEntity?> = _getSelectedFeed
 }

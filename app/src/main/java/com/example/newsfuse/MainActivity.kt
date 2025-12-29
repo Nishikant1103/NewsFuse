@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,8 +39,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NewsFuseTheme {
+                val topAppBarState = rememberTopAppBarState()
                 val scrollBehavior =
-                    TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+                    TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = backStackEntry?.destination
@@ -57,6 +59,7 @@ class MainActivity : ComponentActivity() {
                             .nestedScroll(scrollBehavior.nestedScrollConnection),
                         topBar = {
                             NFuseTopAppBar(
+                                titleText = stringResource(R.string.app_name),
                                 scrollBehavior,
                                 showBackButton,
                                 newsFeedClicked = {
@@ -72,9 +75,12 @@ class MainActivity : ComponentActivity() {
                         val networkStatusLiveDataState =
                             networkStatusLiveData.observeAsState(initial = false)
                         if (networkStatusLiveDataState.value) {
-                            NFuseNavHost(navController, innerPadding, floatingActionClicked = {
-                                navController.navigate(Routes.AddFeed)
-                            })
+                            NFuseNavHost(
+                                navController,
+                                innerPadding,
+                                floatingActionClicked = {
+                                    navController.navigate(Routes.AddFeed)
+                                })
                         } else {
                             EmptyState(
                                 R.raw.no_internet,

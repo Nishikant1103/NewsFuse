@@ -6,10 +6,11 @@ import com.example.newsfuse.datasource.local.db.NewsDatabase
 import com.example.newsfuse.datasource.local.db.dao.FeedsDao
 import com.example.newsfuse.datasource.local.db.dao.NewsDao
 import com.example.newsfuse.datasource.remote.NewsDataSource
-import com.example.newsfuse.datasource.repository.AddFeedRepository
+import com.example.newsfuse.datasource.repository.NewsFeedsRepository
 import com.example.newsfuse.datasource.repository.NewsRepository
 import com.example.newsfuse.view.addfeed.AddFeedViewModel
 import com.example.newsfuse.view.newsdetail.NewsDetailViewModel
+import com.example.newsfuse.view.newsfeeds.NewsFeedsViewModel
 import com.example.newsfuse.view.newslist.NewsListViewModel
 
 class Injector {
@@ -26,6 +27,7 @@ class Injector {
         private fun getNewsRepository(context: Context): NewsRepository {
             return NewsRepository(
                 newsDao = getNewsDao(context),
+                feedsDao = getFeedsDao(context),
                 timeFormatter = TimeFormatter()
             )
         }
@@ -46,15 +48,21 @@ class Injector {
             return NewsDataSource()
         }
 
-        private fun getAddFeedRepository(context: Context): AddFeedRepository {
-            return AddFeedRepository(
-                getNewsDataSource(),
-                getFeedsDao(context)
+        private fun getNewsFeedRepository(context: Context): NewsFeedsRepository {
+            return NewsFeedsRepository(
+                newsDataSource = getNewsDataSource(),
+                feedsDao = getFeedsDao(context),
+                newsDao = getNewsDao(context),
+                context = context
             )
         }
 
         fun getAddFeedViewModel(context: Context): AddFeedViewModel {
-            return AddFeedViewModel(getAddFeedRepository(context))
+            return AddFeedViewModel(getNewsFeedRepository(context))
+        }
+
+        fun getNewsFeedsViewModel(context: Context): NewsFeedsViewModel {
+            return NewsFeedsViewModel(getNewsFeedRepository(context))
         }
     }
 }

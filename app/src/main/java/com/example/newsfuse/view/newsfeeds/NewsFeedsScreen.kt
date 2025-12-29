@@ -4,59 +4,94 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.AlertDialogDefaults
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.example.akhbaar.ui.theme.LocalAppDimensions
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.newsfuse.R
+import com.example.newsfuse.core.Injector
+import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 import com.example.newsfuse.datasource.data.NewsFeed
 import com.example.newsfuse.view.components.SwipeToDismiss
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsFeedsScreen(
     paddingValues: PaddingValues,
     floatingActionClicked: () -> Unit
 ) {
-    // Implementation of the NewsFeedsScreen composable
-    val feedsList = listOf<NewsFeed>(
-        NewsFeed("Feed 1", "https://feed1.com"),
-        NewsFeed("Feed 2", "https://feed2.com"),
-        NewsFeed("Feed 3", "https://feed3.com"),
-    )
+
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val viewModel = remember { Injector.getNewsFeedsViewModel(context) }
+    val feedsList = viewModel.getNewsFeedList.collectAsStateWithLifecycle()
+    var showDeleteFeedDialog by remember { mutableStateOf(false) }
+    var actionableFeedId by remember { mutableIntStateOf(-1) }
+
+    if (feedsList.value.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .wrapContentSize(Alignment.Center)
+        ) {
+            Text(
+                text = stringResource(R.string.feed_screen_empty_state_text),
+                modifier = Modifier.padding(LocalAppDimensions.dimen8)
+            )
+        }
+    }
 
     val scrollState = rememberLazyListState()
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(paddingValues)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+    ) {
         LazyColumn(state = scrollState, modifier = Modifier.fillMaxSize()) {
             itemsIndexed(
-                feedsList.toList(),
+                feedsList.value,
                 key = { _, feeds -> feeds.hashCode() }) { _, feed ->
                 SwipeToDismiss(
                     item = feed,
                     itemComposable = { FeedsItem(feed) },
                     onEndToStartSwiped = {
-
+                        showDeleteFeedDialog = true
+                        actionableFeedId = feed.id
                     },
                     onStartToEndSwiped = {
-
+                        viewModel.updateFeedSelection(feed.id)
                     },
                     leftComposable = {
                         LeftActionItem()
@@ -72,7 +107,7 @@ fun NewsFeedsScreen(
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(LocalAppDimensions.dimenBig),
+                .padding(LocalAppDimensions.dimen32),
             onClick = {
                 floatingActionClicked()
             },
@@ -86,8 +121,47 @@ fun NewsFeedsScreen(
             )
         }
     }
-}
 
+    if (showDeleteFeedDialog) {
+        BasicAlertDialog(
+            onDismissRequest = { showDeleteFeedDialog = false },
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            Surface(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .wrapContentHeight(),
+                shape = MaterialTheme.shapes.large,
+                tonalElevation = AlertDialogDefaults.TonalElevation
+            ) {
+                Column(modifier = Modifier.padding(LocalAppDimensions.dimen16)) {
+                    Text(
+                        text =
+                            stringResource(R.string.delete_feed_dialog_text),
+                    )
+                    Spacer(modifier = Modifier.height(LocalAppDimensions.dimen32))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        TextButton(
+                            onClick = {
+                                viewModel.deleteNewsFeed(actionableFeedId)
+                                showDeleteFeedDialog = false
+                            },
+                        ) {
+                            Text(stringResource(R.string.delete_feed_positive_button_text))
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        TextButton(
+                            onClick = { showDeleteFeedDialog = false },
+                        ) {
+                            Text(stringResource(R.string.delete_feed_negative_button_text))
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun LeftActionItem() {
@@ -101,7 +175,7 @@ fun LeftActionItem() {
             painter = painterResource(id = R.drawable.ic_checkbox),
             contentDescription = "Select Feed",
             tint = MaterialTheme.colorScheme.onTertiaryContainer,
-            modifier = Modifier.padding(LocalAppDimensions.dimenMedium)
+            modifier = Modifier.padding(LocalAppDimensions.dimen8)
         )
     }
 }
@@ -118,7 +192,7 @@ fun RightActionItem() {
             painter = painterResource(id = R.drawable.ic_delete),
             contentDescription = "Remove Feed",
             tint = MaterialTheme.colorScheme.onErrorContainer,
-            modifier = Modifier.padding(LocalAppDimensions.dimenLarge)
+            modifier = Modifier.padding(LocalAppDimensions.dimen16)
         )
     }
 }
@@ -130,26 +204,35 @@ fun FeedsItem(feed: NewsFeed) {
             .fillMaxWidth()
             .wrapContentHeight(),
         colors = cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
+            containerColor = if (feed.selected) {
+                MaterialTheme.colorScheme.tertiaryContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceContainer
+            }
         )
     ) {
+        val textColor = if (feed.selected) {
+            MaterialTheme.colorScheme.onTertiaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        }
         Text(
             text = feed.feedName,
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = textColor,
         )
         Text(
             text = feed.feedUrl,
             style = MaterialTheme.typography.labelSmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(LocalAppDimensions.dimenLarge),
+                .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = textColor
         )
     }
 }

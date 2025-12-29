@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import com.example.akhbaar.ui.theme.LocalAppDimensions
+import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
 
@@ -89,7 +89,7 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
         Text(
             stringResource(R.string.add_feed_help_text),
             modifier = Modifier.padding(
-                LocalAppDimensions.dimenMedium
+                LocalAppDimensions.dimen8
             )
         )
         OutlinedTextField(
@@ -98,7 +98,7 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
             label = { Text(stringResource(R.string.add_feed_name_text_field_label)) },
             textStyle = TextStyle(brush = brush),
             modifier = Modifier.padding(
-                LocalAppDimensions.dimenMedium
+                LocalAppDimensions.dimen8
             ),
         )
 
@@ -108,7 +108,7 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
             label = { Text(stringResource(R.string.add_feed_url_text_field_label)) },
             textStyle = TextStyle(brush = brush),
             modifier = Modifier.padding(
-                LocalAppDimensions.dimenMedium
+                LocalAppDimensions.dimen8
             ),
             isError = textUrl.isNotEmpty() && !isValidUrl,
             supportingText = {
@@ -119,7 +119,7 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
         )
 
         ElevatedButton(
-            modifier = Modifier.padding(LocalAppDimensions.dimenMedium),
+            modifier = Modifier.padding(LocalAppDimensions.dimen8),
             colors = ButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NewsFuse</string>
+    <string name="app_name">The News Fuse</string>
     <string name="go_to_article">Go to the Article</string>
     <string name="add_feed_help_text">In order to add a news feed, please enter a name and a valid link of the RSS Feed</string>
     <string name="add_feed_name_text_field_label">Name</string>
@@ -9,4 +9,12 @@
     <string name="add_feed_button">Add feed</string>
     <string name="add_feed_success_toast">News feed added successfully</string>
     <string name="add_feed_failure_toast">Invalid feed URL</string>
+    <string name="feed_screen_empty_state_text">Your added news feeds will appear here. You don’t have any yet — tap the + icon to add one.</string>
+    <string name="no_selected_feed_empty_state_text">Select a news feed to get started. Tap the Feeds icon to choose one.</string>
+
+    <!--    Delete feed dialog-->
+    <string name="delete_feed_dialog_text">Are you sure that you want to delete the news feed?</string>
+    <string name="delete_feed_positive_button_text">Confirm</string>
+    <string name="delete_feed_negative_button_text">Cancel</string>
+
 </resources>

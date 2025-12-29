@@ -2,12 +2,12 @@ package com.example.newsfuse.view.addfeed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsfuse.datasource.repository.AddFeedRepository
+import com.example.newsfuse.datasource.repository.NewsFeedsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class AddFeedViewModel(private val repository: AddFeedRepository) : ViewModel() {
+class AddFeedViewModel(private val repository: NewsFeedsRepository) : ViewModel() {
 
     private val _networkCallState = MutableStateFlow<FeedCheckState>(FeedCheckState.Idle)
     val networkCallState: StateFlow<FeedCheckState> = _networkCallState

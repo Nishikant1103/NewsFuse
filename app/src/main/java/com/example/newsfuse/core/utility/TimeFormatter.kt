@@ -7,19 +7,14 @@ import java.time.format.DateTimeFormatter
 
 class TimeFormatter {
 
-    fun getFormattedTime(inputFormat: String, outputFormat: String, time: String): String? {
+    fun getFormattedTime(inputFormat: List<String>, outputFormat: String, time: String): String? {
         try {
-            // 1. Parse the incoming date
-            val inputFormatter: DateTimeFormatter? = DateTimeFormatter.ofPattern(inputFormat)
-            val zonedDateTime: ZonedDateTime? = ZonedDateTime.parse(time, inputFormatter)
+            val zonedLocalDateTime = inputFormat.firstNotNullOf { inputFormat ->
+                ZonedDateTime.parse(time, DateTimeFormatter.ofPattern(inputFormat))
+            }.withZoneSameInstant(ZoneId.systemDefault())
 
-            // 2. Convert to device local timezone
-            val localDateTime: ZonedDateTime? =
-                zonedDateTime?.withZoneSameInstant(ZoneId.systemDefault())
-
-            // 3. Format output
-            val outputFormatter: DateTimeFormatter? = DateTimeFormatter.ofPattern(outputFormat)
-            val formatted = localDateTime?.format(outputFormatter)
+            val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(outputFormat)
+            val formatted = zonedLocalDateTime.format(outputFormatter)
 
             return formatted
         } catch (e: Exception) {

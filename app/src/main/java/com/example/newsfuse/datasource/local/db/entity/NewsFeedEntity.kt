@@ -14,4 +14,5 @@ data class NewsFeedEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val feedName: String,
     val feedUrl: String,
+    val selected: Boolean = false
 )
