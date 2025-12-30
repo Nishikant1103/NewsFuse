@@ -16,7 +16,7 @@ interface FeedsDao {
     fun getAllFeedEntities(): Flow<List<NewsFeedEntity>>
 
     @Query("Select * from NewsFeedEntity WHERE selected = true")
-    fun getSelectedFeed(): Flow<NewsFeedEntity>
+    fun getSelectedFeed(): Flow<NewsFeedEntity?>
 
     @Query("DELETE from NewsFeedEntity WHERE id = :id")
     suspend fun deleteFeedById(id: Int)

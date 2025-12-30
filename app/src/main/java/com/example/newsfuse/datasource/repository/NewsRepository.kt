@@ -24,7 +24,7 @@ class NewsRepository(
 
     suspend fun getNewsById(newsId: String): News = toNews(newsDao.getNewsEntityById(newsId))
 
-    fun getSelectedFeed(): Flow<NewsFeedEntity> = feedsDao.getSelectedFeed()
+    fun getSelectedFeed(): Flow<NewsFeedEntity?> = feedsDao.getSelectedFeed()
 
     private fun toNews(entity: NewsEntity): News = News(
         id = entity.id,

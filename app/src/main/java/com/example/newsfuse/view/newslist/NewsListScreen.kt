@@ -83,7 +83,7 @@ fun NewsListScreen(
                     color = MaterialTheme.colorScheme.onSecondaryContainer,
                 )
                 Text(
-                    text = selectedFeed?.feedName + " | " + news.datePosted,
+                    text = (selectedFeed?.feedName ?: "") + " | " + news.datePosted,
                     style = MaterialTheme.typography.labelSmall,
                     modifier = Modifier
                         .fillMaxWidth()

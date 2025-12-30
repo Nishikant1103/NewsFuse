@@ -29,39 +29,43 @@ class NewsProviderWorker(
 
     override suspend fun doWork(): Result {
         return try {
-            withContext(Dispatchers.IO) {
-                val rssFeedUrl = feedsDao
-                    .getSelectedFeed()   // Flow<List<Feed>>
-                    .first()              // suspend until first value
-                    .feedUrl
 
-                val newsResult = newsDataSource.getNewsFromFeedUrl(rssFeedUrl)
+            val feedUrl = feedsDao
+                .getSelectedFeed()        // Flow<NewsFeedEntity?>
+                .first()
+                ?.feedUrl
 
-                if (newsResult.isSuccess) {
-                    val newsSet = newsResult.getOrNull()
-                    newsSet?.let { news: Set<News> ->
-                        // Convert Set<News> to List<NewsEntity>
-                        val newsEntityList = news.map { newsItem ->
-                            NewsEntity(
-                                id = newsItem.id,
-                                datePosted = newsItem.datePosted,
-                                newsTitle = newsItem.newsTitle,
-                                newsDescription = newsItem.newsDescription,
-                                newsLink = newsItem.newsLink,
-                                newsImage = newsItem.newsImageLink
-                            )
-                        }
-                        newsDao.refreshNewsEntities(newsEntityList)
-                    }
-                    Result.success()
-                } else {
-                    Result.failure()
-                }
+            if (feedUrl.isNullOrBlank()) {
+                return Result.failure()
             }
+
+            val newsResult = newsDataSource.getNewsFromFeedUrl(feedUrl)
+
+            if (!newsResult.isSuccess) return Result.failure()
+
+            val news = newsResult.getOrNull().orEmpty()
+
+            val entities = news.map { item ->
+                NewsEntity(
+                    id = item.id,
+                    datePosted = item.datePosted,
+                    newsTitle = item.newsTitle,
+                    newsDescription = item.newsDescription,
+                    newsLink = item.newsLink,
+                    newsImage = item.newsImageLink
+                )
+            }
+
+            newsDao.refreshNewsEntities(entities)
+
+            Result.success()
+
         } catch (e: Exception) {
+
             val errorData = Data.Builder()
                 .putString("error_message", e.message)
                 .build()
+
             Result.failure(errorData)
         }
     }
