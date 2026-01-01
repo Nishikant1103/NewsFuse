@@ -11,16 +11,17 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-class NewsListViewModel(private val repository: NewsRepository) : ViewModel() {
+@Suppress("unused")
+class NewsListViewModel(private val newsRepository: NewsRepository) : ViewModel() {
     val getLatestNewsSet: StateFlow<Set<News>> =
-        repository.getLatestNews.stateIn(
+        newsRepository.getLatestNews.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptySet()
         )
 
 
-    val getSelectedFeed: StateFlow<NewsFeed?> = repository.getSelectedFeed().map {
+    val getSelectedFeed: StateFlow<NewsFeed?> = newsRepository.getSelectedFeed().map {
         it?.let { toNewsFeed(it) }
     }.stateIn(
         scope = viewModelScope,

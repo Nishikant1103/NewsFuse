@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     implementation(libs.androidx.compose.ui.text.google.fonts)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -82,4 +83,8 @@ dependencies {
     // image loading library - Coil
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.mockito.core)
 }

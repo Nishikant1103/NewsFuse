@@ -16,7 +16,7 @@ data class News(
 
 fun toNews(entity: NewsEntity): News = News(
     id = entity.id,
-    datePosted = TimeFormatter().getFormattedTime(
+    datePosted = TimeFormatter.getFormattedTime(
         inputFormat = listOf(
             "EEE, dd MMM yyyy HH:mm:ss z",   // GMT / PST / CET …
             "EEE, dd MMM yyyy HH:mm:ss Z"    // +0000 / -0530 …

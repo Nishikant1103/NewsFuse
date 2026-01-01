@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.Icon
@@ -47,7 +48,6 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             containerColor = MaterialTheme.colorScheme.secondaryContainer
         )
     ) {
-        val context = LocalContext.current
         Text(
             text = newsDetail?.newsTitle ?: "",
             style = MaterialTheme.typography.titleLarge,
@@ -68,16 +68,18 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             color = MaterialTheme.colorScheme.onSecondaryContainer,
         )
 
-        AsyncImage(
-            model = newsDetail?.newsImageLink,
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    vertical = LocalAppDimensions.dimen16,
-                    horizontal = LocalAppDimensions.dimen4
-                ), alignment = Alignment.Center
-        )
+        if (!(newsDetail?.newsImageLink).isNullOrEmpty()) {
+            AsyncImage(
+                model = newsDetail?.newsImageLink,
+                contentDescription = null,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(
+                        vertical = LocalAppDimensions.dimen16,
+                        horizontal = LocalAppDimensions.dimen4
+                    ), alignment = Alignment.Center
+            )
+        }
 
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom) {
             Icon(

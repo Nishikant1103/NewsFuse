@@ -6,20 +6,25 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class TimeFormatter {
+    companion object {
+        fun getFormattedTime(
+            inputFormat: List<String>,
+            outputFormat: String,
+            time: String
+        ): String? {
+            try {
+                val zonedLocalDateTime = inputFormat.firstNotNullOf { inputFormat ->
+                    ZonedDateTime.parse(time, DateTimeFormatter.ofPattern(inputFormat))
+                }.withZoneSameInstant(ZoneId.systemDefault())
 
-    fun getFormattedTime(inputFormat: List<String>, outputFormat: String, time: String): String? {
-        try {
-            val zonedLocalDateTime = inputFormat.firstNotNullOf { inputFormat ->
-                ZonedDateTime.parse(time, DateTimeFormatter.ofPattern(inputFormat))
-            }.withZoneSameInstant(ZoneId.systemDefault())
+                val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(outputFormat)
+                val formatted = zonedLocalDateTime.format(outputFormatter)
 
-            val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(outputFormat)
-            val formatted = zonedLocalDateTime.format(outputFormatter)
-
-            return formatted
-        } catch (e: Exception) {
-            Log.e("TimeFormatter::class", "Error formatting time: ${e.message}")
-            return null
+                return formatted
+            } catch (e: Exception) {
+                Log.e("TimeFormatter::class", "Error formatting time: ${e.message}")
+                return null
+            }
         }
     }
 }
