@@ -15,6 +15,7 @@ import com.example.newsfuse.datasource.remote.NewsDataSource
 import com.example.newsfuse.workers.NewsProviderWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -90,8 +91,8 @@ class NewsFeedsRepository(
     }
 
     suspend fun deleteFeed(id: Int) {
-        feedsDao.getFeedById(id).let {
-            if (it.selected) {
+        feedsDao.getFeedById(id).first().let {
+            if (it?.selected ?: false) {
                 newsDao.deleteAllNewsEntities()
             }
         }

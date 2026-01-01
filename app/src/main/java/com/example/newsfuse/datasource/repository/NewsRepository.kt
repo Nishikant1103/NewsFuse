@@ -1,8 +1,8 @@
 package com.example.newsfuse.datasource.repository
 
 
-import com.example.newsfuse.core.utility.TimeFormatter
 import com.example.newsfuse.datasource.data.News
+import com.example.newsfuse.datasource.data.toNews
 import com.example.newsfuse.datasource.local.db.dao.FeedsDao
 import com.example.newsfuse.datasource.local.db.dao.NewsDao
 import com.example.newsfuse.datasource.local.db.entity.NewsEntity
@@ -13,32 +13,15 @@ import kotlinx.coroutines.flow.map
 class NewsRepository(
     private val newsDao: NewsDao,
     private val feedsDao: FeedsDao,
-    private val timeFormatter: TimeFormatter
 ) {
     val getLatestNews: Flow<Set<News>> = newsDao.getAllNewsEntities()
         .map { newsEntityList ->
-            newsEntityList.map { newsEntity ->
+            newsEntityList?.map { newsEntity ->
                 toNews(newsEntity)
-            }.toSet()
+            }?.toSet() ?: emptySet()
         }
 
-    suspend fun getNewsById(newsId: String): News = toNews(newsDao.getNewsEntityById(newsId))
+    fun getNewsById(newsId: String): Flow<NewsEntity?> = newsDao.getNewsEntityById(newsId)
 
     fun getSelectedFeed(): Flow<NewsFeedEntity?> = feedsDao.getSelectedFeed()
-
-    private fun toNews(entity: NewsEntity): News = News(
-        id = entity.id,
-        datePosted = timeFormatter.getFormattedTime(
-            inputFormat = listOf(
-                "EEE, dd MMM yyyy HH:mm:ss z",   // GMT / PST / CET …
-                "EEE, dd MMM yyyy HH:mm:ss Z"    // +0000 / -0530 …
-            ),
-            outputFormat = "dd.MM.yyyy HH:mm",
-            entity.datePosted
-        ) ?: entity.datePosted,
-        newsTitle = entity.newsTitle,
-        newsDescription = entity.newsDescription,
-        newsLink = entity.newsLink,
-        newsImageLink = entity.newsImage
-    )
 }

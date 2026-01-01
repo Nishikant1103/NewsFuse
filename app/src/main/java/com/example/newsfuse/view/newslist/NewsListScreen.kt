@@ -16,8 +16,8 @@ import androidx.compose.material3.CardDefaults.cardColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,10 +35,9 @@ fun NewsListScreen(
     // Get context to pass to Injector
     val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel = remember { Injector.getNewsListViewModel(context) }
-    val newsListState = viewModel.getNewsListLD.observeAsState()
-    val newsList = newsListState.value ?: emptySet()
+    val newsList by viewModel.getLatestNewsSet.collectAsState()
     val scrollState = rememberLazyListState()
-    val selectedFeed by viewModel.getSelectedFeed.observeAsState()
+    val selectedFeed by viewModel.getSelectedFeed.collectAsState()
 
     if (newsList.isEmpty()) {
         Box(

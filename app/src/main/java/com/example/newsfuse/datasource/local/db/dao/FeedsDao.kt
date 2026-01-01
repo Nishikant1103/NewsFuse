@@ -22,7 +22,7 @@ interface FeedsDao {
     suspend fun deleteFeedById(id: Int)
 
     @Query("Select * from NewsFeedEntity WHERE id = :id")
-    suspend fun getFeedById(id: Int): NewsFeedEntity
+    fun getFeedById(id: Int): Flow<NewsFeedEntity?>
 
     @Query("""
         UPDATE NewsFeedEntity

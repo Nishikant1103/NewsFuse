@@ -1,34 +1,30 @@
 package com.example.newsfuse.view.newslist
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsfuse.datasource.data.News
-import com.example.newsfuse.datasource.local.db.entity.NewsFeedEntity
+import com.example.newsfuse.datasource.data.NewsFeed
+import com.example.newsfuse.datasource.data.toNewsFeed
 import com.example.newsfuse.datasource.repository.NewsRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 class NewsListViewModel(private val repository: NewsRepository) : ViewModel() {
-    private val _getLatestNews = MutableLiveData<Set<News>>().apply {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getLatestNews.collect { newsSet ->
-                postValue(newsSet)
-            }
-        }
-    }
+    val getLatestNewsSet: StateFlow<Set<News>> =
+        repository.getLatestNews.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptySet()
+        )
 
-    val getNewsListLD: LiveData<Set<News>> = _getLatestNews
 
-    private val _getSelectedFeed = MutableLiveData<NewsFeedEntity?>(
-        null
-    ).apply {
-        viewModelScope.launch(Dispatchers.IO) {
-            postValue(repository.getSelectedFeed().first())
-        }
-    }
-
-    val getSelectedFeed: LiveData<NewsFeedEntity?> = _getSelectedFeed
+    val getSelectedFeed: StateFlow<NewsFeed?> = repository.getSelectedFeed().map {
+        it?.let { toNewsFeed(it) }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = null
+    )
 }

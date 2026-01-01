@@ -2,7 +2,6 @@ package com.example.newsfuse.view.newsdetail
 
 
 import android.content.Intent
-import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,8 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,28 +25,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import com.example.newsfuse.core.ui.theme.LocalAppDimensions
+import coil.compose.AsyncImage
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
-import com.example.newsfuse.core.ui.theme.NewsFuseTheme
-import com.example.newsfuse.datasource.data.News
-import coil.compose.AsyncImage
+import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 
 
 @Composable
 fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
-    // Get context to pass to Injector
     val context = LocalContext.current
     val viewModel = remember { Injector.getNewsDetailViewModel(context) }
-
-    LaunchedEffect(newsId) {
-        viewModel.fetchNewsDetail(newsId)
-    }
-
-    val newsDetail = viewModel.getNewsDetailLD.observeAsState()
+    val newsDetail by viewModel.newDetail(newsId).collectAsState()
 
     Card(
         Modifier
@@ -60,7 +49,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
     ) {
         val context = LocalContext.current
         Text(
-            text = newsDetail.value?.newsTitle ?: "",
+            text = newsDetail?.newsTitle ?: "",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .fillMaxWidth()
@@ -70,7 +59,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
         )
 
         Text(
-            text = newsDetail.value?.newsDescription ?: "",
+            text = newsDetail?.newsDescription ?: "",
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier
                 .fillMaxWidth()
@@ -80,7 +69,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
         )
 
         AsyncImage(
-            model = newsDetail.value?.newsImageLink,
+            model = newsDetail?.newsImageLink,
             contentDescription = null,
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,7 +91,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
                         onClick = {
                             val intent = Intent(
                                 Intent.ACTION_VIEW,
-                                newsDetail.value?.newsLink?.toUri()
+                                newsDetail?.newsLink?.toUri()
                             )
                             context.startActivity(intent)
                         }
@@ -118,7 +107,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
             Text(
-                text = newsDetail.value?.datePosted ?: "",
+                text = newsDetail?.datePosted ?: "",
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -128,27 +117,5 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
             )
         }
 
-    }
-}
-
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "DefaultPreviewDark"
-)
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_NO,
-    name = "DefaultPreviewLight"
-)
-@Composable
-fun NewsDetailedViewPreview() {
-    val dummyNews = News(
-        newsTitle = "News 1",
-        newsDescription = "News 1 description",
-        newsLink = "abc@gmail.com"
-    )
-
-    NewsFuseTheme {
-        NewsDetailScreen("", paddingValues = PaddingValues(4.dp))
     }
 }

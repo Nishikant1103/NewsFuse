@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface NewsDao {
     @Query("Select * from NewsEntity")
-    fun getAllNewsEntities(): Flow<List<NewsEntity>>
+    fun getAllNewsEntities(): Flow<List<NewsEntity>?>
 
     @Query("DELETE FROM NewsEntity")
     suspend fun deleteAllNewsEntities()
@@ -20,7 +20,7 @@ interface NewsDao {
     suspend fun insertNewsEntities(newsList: List<NewsEntity>)
 
     @Query("Select * from NewsEntity WHERE id = :newsId")
-    suspend fun getNewsEntityById(newsId: String): NewsEntity
+    fun getNewsEntityById(newsId: String): Flow<NewsEntity?>
 
     @Transaction
     suspend fun refreshNewsEntities(newsList: List<NewsEntity>) {

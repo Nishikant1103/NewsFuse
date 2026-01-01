@@ -27,8 +27,7 @@ class Injector {
         private fun getNewsRepository(context: Context): NewsRepository {
             return NewsRepository(
                 newsDao = getNewsDao(context),
-                feedsDao = getFeedsDao(context),
-                timeFormatter = TimeFormatter()
+                feedsDao = getFeedsDao(context)
             )
         }
 
