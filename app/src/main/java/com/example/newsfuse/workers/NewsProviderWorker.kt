@@ -48,7 +48,7 @@ class NewsProviderWorker(
             val entities = news.map { item ->
                 NewsEntity(
                     id = item.id,
-                    datePosted = item.datePosted,
+                    datePosted = item.datePosted ?: "",
                     newsTitle = item.newsTitle,
                     newsDescription = item.newsDescription,
                     newsLink = item.newsLink,

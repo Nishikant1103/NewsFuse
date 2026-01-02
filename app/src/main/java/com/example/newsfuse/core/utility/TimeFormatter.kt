@@ -12,18 +12,26 @@ class TimeFormatter {
             outputFormat: String,
             time: String
         ): String? {
-            try {
-                val zonedLocalDateTime = inputFormat.firstNotNullOf { inputFormat ->
-                    ZonedDateTime.parse(time, DateTimeFormatter.ofPattern(inputFormat))
-                }.withZoneSameInstant(ZoneId.systemDefault())
-
-                val outputFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern(outputFormat)
-                val formatted = zonedLocalDateTime.format(outputFormatter)
-
-                return formatted
-            } catch (e: Exception) {
-                Log.e("TimeFormatter::class", "Error formatting time: ${e.message}")
-                return null
+            var formattedDateTime: String? = ""
+            inputFormat.forEach { inputFormat ->
+                try {
+                    val zonedLocalDateTime = ZonedDateTime.parse(
+                        time,
+                        DateTimeFormatter.ofPattern(inputFormat)
+                    )
+                        .withZoneSameInstant(ZoneId.systemDefault())
+                    val outputFormatter: DateTimeFormatter =
+                        DateTimeFormatter.ofPattern(outputFormat)
+                    val formatted = zonedLocalDateTime.format(outputFormatter)
+                    formattedDateTime = formatted
+                } catch (e: Exception) {
+                    Log.e("TimeFormatter::class", "Error formatting time: ${e.message}")
+                }
+            }
+            return if (formattedDateTime.isNullOrEmpty()) {
+                null
+            } else {
+                formattedDateTime
             }
         }
     }
