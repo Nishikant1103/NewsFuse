@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -44,7 +43,7 @@ import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
     val context = LocalContext.current
     val viewModel = remember { Injector.getNewsDetailViewModel(context) }
-    val newsDetail by viewModel.newDetail(newsId).collectAsState()
+    val newsDetail by viewModel.newsDetail(newsId).collectAsState()
 
     BoxWithConstraints(
         modifier = Modifier
@@ -100,7 +99,7 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
                         model = newsDetail?.newsImageLink,
                         contentDescription = null,
                         modifier = Modifier
-                            .wrapContentSize()
+                            .fillMaxWidth()
                             .padding(
                                 vertical = LocalAppDimensions.dimen16,
                                 horizontal = LocalAppDimensions.dimen4

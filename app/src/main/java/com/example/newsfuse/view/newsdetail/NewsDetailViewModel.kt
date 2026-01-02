@@ -11,12 +11,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class NewsDetailViewModel(private val repository: NewsRepository) : ViewModel() {
-    fun newDetail(newsId: String): StateFlow<News?> =
+    fun newsDetail(newsId: String): StateFlow<News?> =
         repository.getNewsById(newsId).map {
             it?.let { toNews(it) }
         }.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
+            started = SharingStarted.Eagerly,
             initialValue = null
         )
 }

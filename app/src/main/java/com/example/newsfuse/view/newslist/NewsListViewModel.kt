@@ -16,7 +16,7 @@ class NewsListViewModel(private val newsRepository: NewsRepository) : ViewModel(
     val getLatestNewsSet: StateFlow<Set<News>> =
         newsRepository.getLatestNews.stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Eagerly,
             initialValue = emptySet()
         )
 
@@ -25,7 +25,7 @@ class NewsListViewModel(private val newsRepository: NewsRepository) : ViewModel(
         it?.let { toNewsFeed(it) }
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = SharingStarted.Eagerly,
         initialValue = null
     )
 }

@@ -123,8 +123,8 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
             colors = ButtonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary,
-                disabledContentColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.50f),
-                disabledContainerColor = MaterialTheme.colorScheme.onPrimary
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.20f),
+                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)
             ),
             enabled = textName.isNotEmpty() && isValidUrl,
             onClick = {
