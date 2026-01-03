@@ -9,9 +9,3 @@ data class NewsFeed(
     val selected: Boolean
 )
 
-fun toNewsFeed(newsFeedEntity: NewsFeedEntity) = NewsFeed(
-    id = newsFeedEntity.id,
-    feedName = newsFeedEntity.feedName,
-    feedUrl = newsFeedEntity.feedUrl,
-    selected = newsFeedEntity.selected
-)

@@ -3,7 +3,7 @@ package com.example.newsfuse.view.newsdetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsfuse.datasource.data.News
-import com.example.newsfuse.datasource.data.toNews
+import com.example.newsfuse.datasource.local.db.entity.toNews
 import com.example.newsfuse.datasource.repository.NewsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.stateIn
 class NewsDetailViewModel(private val repository: NewsRepository) : ViewModel() {
     fun newsDetail(newsId: String): StateFlow<News?> =
         repository.getNewsById(newsId).map {
-            it?.let { toNews(it) }
+            it?.toNews()
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,

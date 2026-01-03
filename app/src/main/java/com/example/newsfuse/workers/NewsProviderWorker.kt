@@ -29,9 +29,8 @@ class NewsProviderWorker(
 
     override suspend fun doWork(): Result {
         return try {
-
             val feedUrl = feedsDao
-                .getSelectedFeed()        // Flow<NewsFeedEntity?>
+                .getSelectedFeed()
                 .first()
                 ?.feedUrl
 
@@ -42,9 +41,7 @@ class NewsProviderWorker(
             val newsResult = newsDataSource.getNewsFromFeedUrl(feedUrl)
 
             if (!newsResult.isSuccess) return Result.failure()
-
             val news = newsResult.getOrNull().orEmpty()
-
             val entities = news.map { item ->
                 NewsEntity(
                     id = item.id,

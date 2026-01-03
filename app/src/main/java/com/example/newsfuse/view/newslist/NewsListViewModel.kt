@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.newsfuse.datasource.data.News
 import com.example.newsfuse.datasource.data.NewsFeed
-import com.example.newsfuse.datasource.data.toNewsFeed
+import com.example.newsfuse.datasource.local.db.entity.toNewsFeed
 import com.example.newsfuse.datasource.repository.NewsRepository
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +22,7 @@ class NewsListViewModel(private val newsRepository: NewsRepository) : ViewModel(
 
 
     val getSelectedFeed: StateFlow<NewsFeed?> = newsRepository.getSelectedFeed().map {
-        it?.let { toNewsFeed(it) }
+        it?.toNewsFeed()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
