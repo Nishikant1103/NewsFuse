@@ -5,6 +5,13 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
+
+/**
+ * Utility class for formatting date and time strings.
+ *
+ * Provides methods to convert date/time strings from various input formats to a specified output format,
+ * adjusting for the system's default time zone.
+ */
 class TimeFormatter {
     companion object {
         fun getFormattedTime(
@@ -18,8 +25,7 @@ class TimeFormatter {
                     val zonedLocalDateTime = ZonedDateTime.parse(
                         time,
                         DateTimeFormatter.ofPattern(inputFormat)
-                    )
-                        .withZoneSameInstant(ZoneId.systemDefault())
+                    ).withZoneSameInstant(ZoneId.systemDefault())
                     val outputFormatter: DateTimeFormatter =
                         DateTimeFormatter.ofPattern(outputFormat)
                     val formatted = zonedLocalDateTime.format(outputFormatter)

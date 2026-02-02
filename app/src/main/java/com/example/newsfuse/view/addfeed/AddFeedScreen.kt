@@ -33,7 +33,6 @@ import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
 
-
 @Composable
 fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
     val brushColorList = listOf(
@@ -43,94 +42,119 @@ fun AddFeedScreen(paddingValues: PaddingValues, feedAdded: () -> Unit) {
     )
     val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel = remember { Injector.getAddFeedViewModel(context) }
+    var textName by remember { mutableStateOf("") }
+    var textUrl by remember { mutableStateOf("") }
+    val isValidUrl = remember(textUrl) {
+        Patterns.WEB_URL.matcher(textUrl).matches()
+    }
+    val isNetworkCallSuccess by viewModel.networkCallState.collectAsState()
+
+    val brush = remember {
+        Brush.linearGradient(colors = brushColorList)
+    }
+
+    val successToastMessage = stringResource(R.string.add_feed_success_toast)
+    val failureToastMessage = stringResource(R.string.add_feed_failure_toast)
+
+    LaunchedEffect(isNetworkCallSuccess) {
+        when(isNetworkCallSuccess) {
+            FeedCheckState.Failure -> {
+                Toast.makeText(context, failureToastMessage, Toast.LENGTH_SHORT).show()
+            }
+            FeedCheckState.Success -> {
+                viewModel.addFeedToLocalStorage(textName, textUrl)
+                Toast.makeText(context, successToastMessage, Toast.LENGTH_SHORT).show()
+                feedAdded()
+            }
+            else -> Unit
+        }
+    }
+
     Column(modifier = Modifier.padding(paddingValues)) {
-        val brush = remember {
-            Brush.linearGradient(
-                colors = brushColorList
-            )
-        }
-        var textName by remember { mutableStateOf("") }
-        var textUrl by remember { mutableStateOf("") }
-        val isValidUrl = remember(textUrl) {
-            Patterns.WEB_URL.matcher(textUrl).matches()
-        }
-        val isNetworkCallSuccess by viewModel.networkCallState.collectAsState()
-
-        if (isNetworkCallSuccess is FeedCheckState.Loading) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.5f)) // semi-transparent overlay
-                    .clickable(enabled = false) {} // blocks clicks behind
-                    .wrapContentSize(Alignment.Center)
-            ) {
-                CircularProgressIndicator()
-            }
-        }
-
-        val successToastMessage = stringResource(R.string.add_feed_success_toast)
-        val failureToastMessage = stringResource(R.string.add_feed_failure_toast)
-
-        LaunchedEffect(isNetworkCallSuccess) {
-            when(isNetworkCallSuccess) {
-                FeedCheckState.Failure -> {
-                    Toast.makeText(context, failureToastMessage, Toast.LENGTH_SHORT).show()
-                }
-                FeedCheckState.Success -> {
-                    viewModel.addFeedToLocalStorage(textName, textUrl)
-                    Toast.makeText(context, successToastMessage, Toast.LENGTH_SHORT).show()
-                    feedAdded()
-                }
-                else -> Unit
-            }
-        }
-
-
-        Text(
-            stringResource(R.string.add_feed_help_text),
-            modifier = Modifier.padding(
-                LocalAppDimensions.dimen8
-            )
-        )
-        OutlinedTextField(
+        AddFeedHelpText()
+        AddFeedNameField(
             value = textName,
             onValueChange = { textName = it },
-            label = { Text(stringResource(R.string.add_feed_name_text_field_label)) },
-            textStyle = TextStyle(brush = brush),
-            modifier = Modifier.padding(
-                LocalAppDimensions.dimen8
-            ),
+            brush = brush
         )
-
-        OutlinedTextField(
+        AddFeedUrlField(
             value = textUrl,
             onValueChange = { textUrl = it },
-            label = { Text(stringResource(R.string.add_feed_url_text_field_label)) },
-            textStyle = TextStyle(brush = brush),
-            modifier = Modifier.padding(
-                LocalAppDimensions.dimen8
-            ),
-            isError = textUrl.isNotEmpty() && !isValidUrl,
-            supportingText = {
-                if (textUrl.isNotEmpty() && !isValidUrl) {
-                    Text(stringResource(R.string.add_feed_url_text_field_supporting_text))
-                }
-            }
+            brush = brush,
+            isValidUrl = isValidUrl
         )
-
-        ElevatedButton(
-            modifier = Modifier.padding(LocalAppDimensions.dimen8),
-            colors = ButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-                disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.20f),
-                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)
-            ),
+        AddFeedButton(
             enabled = textName.isNotEmpty() && isValidUrl,
-            onClick = {
-                viewModel.isValidNewsFeed(textUrl)
-            }) {
-            Text(stringResource(R.string.add_feed_button))
+            onClick = { viewModel.isValidNewsFeed(textUrl) }
+        )
+        if (isNetworkCallSuccess is FeedCheckState.Loading) {
+            LoadingOverlay()
         }
+    }
+}
+
+@Composable
+private fun AddFeedHelpText() {
+    Text(
+        stringResource(R.string.add_feed_help_text),
+        modifier = Modifier.padding(LocalAppDimensions.dimen8)
+    )
+}
+
+@Composable
+private fun AddFeedNameField(value: String, onValueChange: (String) -> Unit, brush: Brush) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(R.string.add_feed_name_text_field_label)) },
+        textStyle = TextStyle(brush = brush),
+        modifier = Modifier.padding(LocalAppDimensions.dimen8),
+    )
+}
+
+@Composable
+private fun AddFeedUrlField(value: String, onValueChange: (String) -> Unit, brush: Brush, isValidUrl: Boolean) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(stringResource(R.string.add_feed_url_text_field_label)) },
+        textStyle = TextStyle(brush = brush),
+        modifier = Modifier.padding(LocalAppDimensions.dimen8),
+        isError = value.isNotEmpty() && !isValidUrl,
+        supportingText = {
+            if (value.isNotEmpty() && !isValidUrl) {
+                Text(stringResource(R.string.add_feed_url_text_field_supporting_text))
+            }
+        }
+    )
+}
+
+@Composable
+private fun AddFeedButton(enabled: Boolean, onClick: () -> Unit) {
+    ElevatedButton(
+        modifier = Modifier.padding(LocalAppDimensions.dimen8),
+        colors = ButtonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary,
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.20f),
+            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f)
+        ),
+        enabled = enabled,
+        onClick = onClick
+    ) {
+        Text(stringResource(R.string.add_feed_button))
+    }
+}
+
+@Composable
+private fun LoadingOverlay() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(enabled = false) {}
+            .wrapContentSize(Alignment.Center)
+    ) {
+        CircularProgressIndicator()
     }
 }

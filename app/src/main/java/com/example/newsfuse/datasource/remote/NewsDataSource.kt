@@ -9,8 +9,19 @@ import org.jsoup.parser.Parser
 import org.jsoup.select.Elements
 import java.net.URL
 
+/**
+ * Data source for fetching news articles from a remote RSS feed URL.
+ *
+ * This class is responsible for parsing RSS feeds using Jsoup and converting them into a set of [News] objects.
+ */
 class NewsDataSource {
 
+    /**
+     * Fetches news articles from the given RSS feed URL.
+     *
+     * @param rssFeedUrl The URL of the RSS feed to fetch news from.
+     * @return [Result.success] with a set of [News] if successful, or [Result.failure] with an exception otherwise.
+     */
     fun getNewsFromFeedUrl(rssFeedUrl: String): Result<Set<News>> {
         val newsSet = mutableSetOf<News>()
         val rssUrl = URL(rssFeedUrl)
@@ -36,6 +47,12 @@ class NewsDataSource {
         }
     }
 
+    /**
+     * Parses an RSS feed item [Element] and converts it to a [News] object.
+     *
+     * @param element The Jsoup [Element] representing a single RSS feed item.
+     * @return A [News] object containing the parsed data.
+     */
     private fun getNews(element: Element): News {
         return News(
             datePosted = element.allElements.select("pubDate").text(),

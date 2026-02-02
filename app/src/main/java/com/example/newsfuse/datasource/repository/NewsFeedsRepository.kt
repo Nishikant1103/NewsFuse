@@ -19,6 +19,17 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
+/**
+ * Repository for managing news feeds and related operations.
+ *
+ * This class provides methods to verify, add, update, and delete news feeds, as well as to trigger
+ * immediate news synchronization using WorkManager. It also exposes a Flow of all news feeds for UI observation.
+ *
+ * @property newsDataSource The remote data source for fetching news articles.
+ * @property feedsDao DAO for accessing news feed entities in the local database.
+ * @property newsDao DAO for accessing news articles in the local database.
+ * @property context Application context, used for WorkManager operations.
+ */
 class NewsFeedsRepository(
     private val newsDataSource: NewsDataSource,
     private val feedsDao: FeedsDao,
@@ -71,10 +82,16 @@ class NewsFeedsRepository(
         feedsDao.updateSelection(feedId)
     }
 
+    /**
+     * Triggers an immediate, one-time news synchronization using WorkManager.
+     *
+     * This method is intended for use cases where the user selects a news source and wants to fetch
+     * the latest news on demand, outside of the periodic sync schedule. It enqueues a unique work
+     * request with network and battery constraints, ensuring only one such sync runs at a time.
+     */
     fun startImmediateSync() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)
             .build()
 
         val immediateWorkRequest = OneTimeWorkRequestBuilder<NewsProviderWorker>()

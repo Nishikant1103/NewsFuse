@@ -12,6 +12,17 @@ import com.example.newsfuse.view.newsdetail.NewsDetailViewModel
 import com.example.newsfuse.view.newsfeeds.NewsFeedsViewModel
 import com.example.newsfuse.view.newslist.NewsListViewModel
 
+/**
+ * Injector is a simple service locator for providing dependencies throughout the app.
+ *
+ * This class provides static methods to create and retrieve instances of repositories,
+ * DAOs, databases, data sources, and ViewModels. It is used to manually wire dependencies
+ * without a dependency injection framework.
+ *
+ * Usage:
+ *   - Call the static methods to obtain ViewModels or repositories, passing the required Context.
+ *   - Example: val viewModel = Injector.getNewsListViewModel(context)
+ **/
 class Injector {
     companion object {
 

@@ -9,6 +9,16 @@ import android.net.NetworkRequest
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.LiveData
 
+/**
+ * LiveData that monitors the device's network connectivity status.
+ *
+ * This class uses a singleton pattern to provide a single instance per application context.
+ * It listens for network availability changes and posts updates as Boolean values:
+ * `true` if the device is connected to the internet, `false` otherwise.
+ *
+ * @constructor Private. Use [getInstance] to obtain an instance.
+ * @param context The application context used to access system services.
+ */
 class NetworkStatusLiveData private constructor(context: Context) : LiveData<Boolean>() {
 
     private val connectivityManager =

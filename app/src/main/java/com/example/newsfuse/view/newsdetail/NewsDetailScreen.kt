@@ -37,6 +37,7 @@ import coil.compose.AsyncImage
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
 import com.example.newsfuse.core.ui.theme.LocalAppDimensions
+import com.example.newsfuse.datasource.data.News
 
 
 @Composable
@@ -45,6 +46,22 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
     val viewModel = remember { Injector.getNewsDetailViewModel(context) }
     val newsDetail by viewModel.newsDetail(newsId).collectAsState()
 
+    NewsDetailContent(
+        newsDetail = newsDetail,
+        paddingValues = paddingValues,
+        onOpenInBrowser = { url ->
+            val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+            context.startActivity(intent)
+        }
+    )
+}
+
+@Composable
+private fun NewsDetailContent(
+    newsDetail: News?,
+    paddingValues: PaddingValues,
+    onOpenInBrowser: (String) -> Unit
+) {
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
@@ -58,98 +75,132 @@ fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Card(
-                Modifier
-                    .fillMaxWidth()
-                    .then(
-                        if (isPortrait) {
-                            Modifier.height(maxHeight)
-                        } else {
-                            Modifier.wrapContentHeight()
-                        }
-                    )
-                    .padding(LocalAppDimensions.dimen16),
-                elevation = CardDefaults.cardElevation(),
-                colors = cardColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            ) {
-                Text(
-                    text = newsDetail?.newsTitle ?: "",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(LocalAppDimensions.dimen16),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-
-                Text(
-                    text = newsDetail?.newsDescription ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = LocalAppDimensions.dimen16),
-                    textAlign = TextAlign.Start,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
-
-                if (!(newsDetail?.newsImageLink).isNullOrEmpty()) {
-                    AsyncImage(
-                        model = newsDetail?.newsImageLink,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(
-                                vertical = LocalAppDimensions.dimen16,
-                                horizontal = LocalAppDimensions.dimen4
-                            ), alignment = Alignment.Center
-                    )
-                }
-
-                Spacer(modifier = Modifier.weight(1f))
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Bottom
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.open_news_article_in_browser),
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
-                        modifier = Modifier
-                            .size(LocalAppDimensions.dimen32 + LocalAppDimensions.dimen16)
-                            .align(Alignment.CenterHorizontally)
-                            .clickable(
-                                onClick = {
-                                    val intent = Intent(
-                                        Intent.ACTION_VIEW,
-                                        newsDetail?.newsLink?.toUri()
-                                    )
-                                    context.startActivity(intent)
-                                }
-                            )
-                    )
-                    Text(
-                        text = stringResource(R.string.go_to_article),
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(LocalAppDimensions.dimen2),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                    Text(
-                        text = newsDetail?.datePosted ?: "",
-                        style = MaterialTheme.typography.labelSmall,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(LocalAppDimensions.dimen16),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
-                }
-            }
+            NewsDetailCard(
+                newsDetail = newsDetail,
+                isPortrait = isPortrait,
+                maxHeight = maxHeight,
+                onOpenInBrowser = onOpenInBrowser
+            )
         }
+    }
+}
+
+@Composable
+private fun NewsDetailCard(
+    newsDetail: News?,
+    isPortrait: Boolean,
+    maxHeight: androidx.compose.ui.unit.Dp,
+    onOpenInBrowser: (String) -> Unit
+) {
+    Card(
+        Modifier
+            .fillMaxWidth()
+            .then(
+                if (isPortrait) {
+                    Modifier.height(maxHeight)
+                } else {
+                    Modifier.wrapContentHeight()
+                }
+            )
+            .padding(LocalAppDimensions.dimen16),
+        elevation = CardDefaults.cardElevation(),
+        colors = cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
+    ) {
+        NewsDetailTitle(newsDetail?.newsTitle)
+        NewsDetailDescription(newsDetail?.newsDescription)
+        NewsDetailImage(newsDetail?.newsImageLink)
+        Spacer(modifier = Modifier.weight(1f))
+        NewsDetailFooter(
+            newsLink = newsDetail?.newsLink,
+            datePosted = newsDetail?.datePosted,
+            onOpenInBrowser = onOpenInBrowser
+        )
+    }
+}
+
+@Composable
+private fun NewsDetailTitle(title: String?) {
+    Text(
+        text = title ?: "",
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(LocalAppDimensions.dimen16),
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colorScheme.onSecondaryContainer,
+    )
+}
+
+@Composable
+private fun NewsDetailDescription(description: String?) {
+    Text(
+        text = description ?: "",
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = LocalAppDimensions.dimen16),
+        textAlign = TextAlign.Start,
+        color = MaterialTheme.colorScheme.onSecondaryContainer,
+    )
+}
+
+@Composable
+private fun NewsDetailImage(imageUrl: String?) {
+    if (!imageUrl.isNullOrEmpty()) {
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    vertical = LocalAppDimensions.dimen16,
+                    horizontal = LocalAppDimensions.dimen4
+                ),
+            alignment = Alignment.Center
+        )
+    }
+}
+
+@Composable
+private fun NewsDetailFooter(
+    newsLink: String?,
+    datePosted: String?,
+    onOpenInBrowser: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom
+    ) {
+        if (!newsLink.isNullOrEmpty()) {
+            Icon(
+                painter = painterResource(id = R.drawable.open_news_article_in_browser),
+                contentDescription = "",
+                tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                modifier = Modifier
+                    .size(LocalAppDimensions.dimen32 + LocalAppDimensions.dimen16)
+                    .align(Alignment.CenterHorizontally)
+                    .clickable { onOpenInBrowser(newsLink) }
+            )
+            Text(
+                text = stringResource(R.string.go_to_article),
+                style = MaterialTheme.typography.labelSmall,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(LocalAppDimensions.dimen2),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSecondaryContainer
+            )
+        }
+        Text(
+            text = datePosted ?: "",
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(LocalAppDimensions.dimen16),
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }

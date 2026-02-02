@@ -51,14 +51,44 @@ fun NewsFeedsScreen(
     paddingValues: PaddingValues,
     floatingActionClicked: () -> Unit
 ) {
-
     val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel = remember { Injector.getNewsFeedsViewModel(context) }
     val feedsList = viewModel.getNewsFeedList.collectAsStateWithLifecycle()
     var showDeleteFeedDialog by remember { mutableStateOf(false) }
     var actionableFeedId by remember { mutableIntStateOf(-1) }
 
-    if (feedsList.value.isEmpty()) {
+    NewsFeedsScreenContent(
+        feedsList = feedsList.value,
+        paddingValues = paddingValues,
+        showDeleteFeedDialog = showDeleteFeedDialog,
+        actionableFeedId = actionableFeedId,
+        onDeleteFeed = { feedId ->
+            viewModel.deleteNewsFeed(feedId)
+            showDeleteFeedDialog = false
+        },
+        onDismissDeleteDialog = { showDeleteFeedDialog = false },
+        onFeedSelect = { feedId -> viewModel.updateFeedSelection(feedId) },
+        onFeedDeleteSwipe = { feedId ->
+            showDeleteFeedDialog = true
+            actionableFeedId = feedId
+        },
+        floatingActionClicked = floatingActionClicked
+    )
+}
+
+@Composable
+private fun NewsFeedsScreenContent(
+    feedsList: List<NewsFeed>,
+    paddingValues: PaddingValues,
+    showDeleteFeedDialog: Boolean,
+    actionableFeedId: Int,
+    onDeleteFeed: (Int) -> Unit,
+    onDismissDeleteDialog: () -> Unit,
+    onFeedSelect: (Int) -> Unit,
+    onFeedDeleteSwipe: (Int) -> Unit,
+    floatingActionClicked: () -> Unit
+) {
+    if (feedsList.isEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -79,38 +109,57 @@ fun NewsFeedsScreen(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        LazyColumn(state = scrollState, modifier = Modifier.fillMaxSize()) {
-            itemsIndexed(
-                feedsList.value,
-                key = { _, feeds -> feeds.hashCode() }) { _, feed ->
-                SwipeToDismiss(
-                    item = feed,
-                    itemComposable = { FeedsItem(feed) },
-                    onEndToStartSwiped = {
-                        showDeleteFeedDialog = true
-                        actionableFeedId = feed.id
-                    },
-                    onStartToEndSwiped = {
-                        viewModel.updateFeedSelection(feed.id)
-                    },
-                    leftComposable = {
-                        LeftActionItem()
-                    },
-                    rightComposable = {
-                        RightActionItem()
-                    },
-                )
-            }
+        FeedsList(
+            feedsList = feedsList,
+            scrollState = scrollState,
+            onFeedSelect = onFeedSelect,
+            onFeedDeleteSwipe = onFeedDeleteSwipe
+        )
+        FeedsFloatingActionButton(onClick = floatingActionClicked)
+    }
+
+    if (showDeleteFeedDialog) {
+        DeleteFeedDialog(
+            onDelete = { onDeleteFeed(actionableFeedId) },
+            onDismiss = onDismissDeleteDialog,
+            paddingValues = paddingValues
+        )
+    }
+}
+
+@Composable
+private fun FeedsList(
+    feedsList: List<NewsFeed>,
+    scrollState: androidx.compose.foundation.lazy.LazyListState,
+    onFeedSelect: (Int) -> Unit,
+    onFeedDeleteSwipe: (Int) -> Unit
+) {
+    LazyColumn(state = scrollState, modifier = Modifier.fillMaxSize()) {
+        itemsIndexed(
+            feedsList,
+            key = { _, feeds -> feeds.hashCode() }) { _, feed ->
+            SwipeToDismiss(
+                item = feed,
+                itemComposable = { FeedsItem(feed) },
+                onEndToStartSwiped = { onFeedDeleteSwipe(feed.id) },
+                onStartToEndSwiped = { onFeedSelect(feed.id) },
+                leftComposable = { LeftActionItem() },
+                rightComposable = { RightActionItem() },
+            )
         }
+    }
+}
 
-
+@Composable
+private fun FeedsFloatingActionButton(onClick: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.BottomEnd
+    ) {
         FloatingActionButton(
             modifier = Modifier
-                .align(Alignment.BottomEnd)
                 .padding(LocalAppDimensions.dimen32),
-            onClick = {
-                floatingActionClicked()
-            },
+            onClick = onClick,
             containerColor = MaterialTheme.colorScheme.secondaryContainer,
             contentColor = MaterialTheme.colorScheme.secondary
         ) {
@@ -121,40 +170,42 @@ fun NewsFeedsScreen(
             )
         }
     }
+}
 
-    if (showDeleteFeedDialog) {
-        BasicAlertDialog(
-            onDismissRequest = { showDeleteFeedDialog = false },
-            modifier = Modifier.padding(paddingValues)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DeleteFeedDialog(
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit,
+    paddingValues: PaddingValues
+) {
+    BasicAlertDialog(
+        onDismissRequest = onDismiss,
+        modifier = Modifier.padding(paddingValues)
+    ) {
+        Surface(
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight(),
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
-            Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
-                shape = MaterialTheme.shapes.large,
-                tonalElevation = AlertDialogDefaults.TonalElevation
-            ) {
-                Column(modifier = Modifier.padding(LocalAppDimensions.dimen16)) {
-                    Text(
-                        text =
-                            stringResource(R.string.delete_feed_dialog_text),
-                    )
-                    Spacer(modifier = Modifier.height(LocalAppDimensions.dimen32))
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        TextButton(
-                            onClick = {
-                                viewModel.deleteNewsFeed(actionableFeedId)
-                                showDeleteFeedDialog = false
-                            },
-                        ) {
-                            Text(stringResource(R.string.delete_feed_positive_button_text))
-                        }
-                        Spacer(modifier = Modifier.weight(1f))
-                        TextButton(
-                            onClick = { showDeleteFeedDialog = false },
-                        ) {
-                            Text(stringResource(R.string.delete_feed_negative_button_text))
-                        }
+            Column(modifier = Modifier.padding(LocalAppDimensions.dimen16)) {
+                Text(
+                    text = stringResource(R.string.delete_feed_dialog_text),
+                )
+                Spacer(modifier = Modifier.height(LocalAppDimensions.dimen32))
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(
+                        onClick = onDelete,
+                    ) {
+                        Text(stringResource(R.string.delete_feed_positive_button_text))
+                    }
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(
+                        onClick = onDismiss,
+                    ) {
+                        Text(stringResource(R.string.delete_feed_negative_button_text))
                     }
 
                 }
