@@ -24,11 +24,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.newsfuse.core.ui.theme.NewsFuseTheme
 import com.example.newsfuse.core.utility.NetworkStatusLiveData
-import com.example.newsfuse.view.components.EmptyState
 import com.example.newsfuse.view.components.NFuseNavHost
 import com.example.newsfuse.view.components.NFuseTopAppBar
 import com.example.newsfuse.view.components.Routes
 import com.example.newsfuse.view.newslist.NewsListScreen
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -40,15 +46,34 @@ class MainActivity : ComponentActivity() {
         setContent {
             NewsFuseTheme {
                 val topAppBarState = rememberTopAppBarState()
-                val scrollBehavior =
-                    TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
+                val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
                 val navController = rememberNavController()
                 val backStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = backStackEntry?.destination
+                val showBackButton = navController.previousBackStackEntry != null &&
+                        currentDestination?.route != Routes.NewsList::class.simpleName
+                val snackbarHostState = remember { SnackbarHostState() }
+                val coroutineScope = rememberCoroutineScope()
+                val lastNetworkStatusState = remember { mutableStateOf(true) }
+                val networkStatusLiveDataState = networkStatusLiveData.observeAsState(initial = true)
 
-                val showBackButton =
-                    navController.previousBackStackEntry != null &&
-                            currentDestination?.route != Routes.NewsList::class.simpleName
+                val internetRestoredMsg = stringResource(R.string.internet_connection_restored)
+                val noInternetMsg = stringResource(R.string.no_internet_connection)
+                // Show snackbar on network status change
+                LaunchedEffect(networkStatusLiveDataState.value) {
+                    if (lastNetworkStatusState.value != networkStatusLiveDataState.value) {
+                        val message = if (networkStatusLiveDataState.value) {
+                            internetRestoredMsg
+                        } else {
+                            noInternetMsg
+                        }
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar(message)
+                        }
+                        lastNetworkStatusState.value = networkStatusLiveDataState.value
+                    }
+                }
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -70,24 +95,16 @@ class MainActivity : ComponentActivity() {
                                 navigateUp = {
                                     navController.navigateUp()
                                 })
-                        }
+                        },
+                        snackbarHost = { SnackbarHost(snackbarHostState) }
                     ) { innerPadding ->
-                        val networkStatusLiveDataState =
-                            networkStatusLiveData.observeAsState(initial = false)
-                        if (networkStatusLiveDataState.value) {
-                            NFuseNavHost(
-                                navController,
-                                innerPadding,
-                                floatingActionClicked = {
-                                    navController.navigate(Routes.AddFeed)
-                                })
-                        } else {
-                            EmptyState(
-                                R.raw.no_internet,
-                                "No Internet Connection",
-                                "Please check your network settings and try again."
-                            )
-                        }
+                        // Always show main content, even if offline
+                        NFuseNavHost(
+                            navController,
+                            innerPadding,
+                            floatingActionClicked = {
+                                navController.navigate(Routes.AddFeed)
+                            })
                     }
                 }
             }
