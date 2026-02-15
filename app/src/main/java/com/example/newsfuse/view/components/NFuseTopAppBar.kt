@@ -32,9 +32,11 @@ fun NFuseTopAppBar(
     TopAppBar(
         modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            scrolledContainerColor = MaterialTheme.colorScheme.primaryContainer, // prevents color change
-            titleContentColor = MaterialTheme.colorScheme.primary
+            containerColor = MaterialTheme.colorScheme.background,
+            scrolledContainerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground
         ),
         title = {
             Text(

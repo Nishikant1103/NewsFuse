@@ -1,5 +1,6 @@
 package com.example.newsfuse.view.newsfeeds
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.newsfuse.R
 import com.example.newsfuse.core.Injector
@@ -88,20 +90,6 @@ private fun NewsFeedsScreenContent(
     onFeedDeleteSwipe: (Int) -> Unit,
     floatingActionClicked: () -> Unit
 ) {
-    if (feedsList.isEmpty()) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .wrapContentSize(Alignment.Center)
-        ) {
-            Text(
-                text = stringResource(R.string.feed_screen_empty_state_text),
-                modifier = Modifier.padding(LocalAppDimensions.dimen8)
-            )
-        }
-    }
-
     val scrollState = rememberLazyListState()
 
     Box(
@@ -109,12 +97,26 @@ private fun NewsFeedsScreenContent(
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        FeedsList(
-            feedsList = feedsList,
-            scrollState = scrollState,
-            onFeedSelect = onFeedSelect,
-            onFeedDeleteSwipe = onFeedDeleteSwipe
-        )
+        if (feedsList.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.feed_screen_empty_state_text),
+                    modifier = Modifier.padding(LocalAppDimensions.dimen8),
+                    textAlign = TextAlign.Center
+                )
+            }
+        } else {
+            FeedsList(
+                feedsList = feedsList,
+                scrollState = scrollState,
+                onFeedSelect = onFeedSelect,
+                onFeedDeleteSwipe = onFeedDeleteSwipe
+            )
+        }
+
         FeedsFloatingActionButton(onClick = floatingActionClicked)
     }
 
@@ -160,8 +162,8 @@ private fun FeedsFloatingActionButton(onClick: () -> Unit) {
             modifier = Modifier
                 .padding(LocalAppDimensions.dimen32),
             onClick = onClick,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
-            contentColor = MaterialTheme.colorScheme.secondary
+            containerColor = MaterialTheme.colorScheme.secondary,
+            contentColor = MaterialTheme.colorScheme.onSecondary
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
@@ -254,12 +256,11 @@ fun FeedsItem(feed: NewsFeed) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight(),
+        border = if (feed.selected) {
+            BorderStroke(1.dp, MaterialTheme.colorScheme.secondary)
+        } else null,
         colors = cardColors(
-            containerColor = if (feed.selected) {
-                MaterialTheme.colorScheme.tertiaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceContainer
-            }
+            containerColor = MaterialTheme.colorScheme.surface
         )
     ) {
         val textColor = if (feed.selected) {
