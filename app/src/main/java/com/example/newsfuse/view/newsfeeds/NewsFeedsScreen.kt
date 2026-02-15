@@ -168,7 +168,7 @@ private fun FeedsFloatingActionButton(onClick: () -> Unit) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = "Add Feed",
-                tint = MaterialTheme.colorScheme.onSecondaryContainer
+                tint = MaterialTheme.colorScheme.onSecondary
             )
         }
     }
