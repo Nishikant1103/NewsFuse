@@ -118,7 +118,7 @@ private fun NewsListItem(
             )
             .clickable { onNewsItemClicked(news.id) },
         colors = cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Text(
@@ -128,7 +128,7 @@ private fun NewsListItem(
                 .fillMaxWidth()
                 .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Start,
-            color = MaterialTheme.colorScheme.onSecondaryContainer,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             text = (selectedFeedName ?: "") + " | " + news.datePosted,

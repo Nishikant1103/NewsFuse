@@ -4,6 +4,7 @@ package com.example.newsfuse.view.newsdetail
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -62,23 +63,17 @@ private fun NewsDetailContent(
     paddingValues: PaddingValues,
     onOpenInBrowser: (String) -> Unit
 ) {
-    BoxWithConstraints(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
     ) {
-        val maxHeight = maxHeight
-        val maxWidth = maxWidth
-        val isPortrait = maxHeight > maxWidth
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
             NewsDetailCard(
                 newsDetail = newsDetail,
-                isPortrait = isPortrait,
-                maxHeight = maxHeight,
                 onOpenInBrowser = onOpenInBrowser
             )
         }
@@ -88,35 +83,32 @@ private fun NewsDetailContent(
 @Composable
 private fun NewsDetailCard(
     newsDetail: News?,
-    isPortrait: Boolean,
-    maxHeight: androidx.compose.ui.unit.Dp,
     onOpenInBrowser: (String) -> Unit
 ) {
     Card(
-        Modifier
-            .fillMaxWidth()
-            .then(
-                if (isPortrait) {
-                    Modifier.height(maxHeight)
-                } else {
-                    Modifier.wrapContentHeight()
-                }
-            )
+        modifier = Modifier
+            .fillMaxSize()
             .padding(LocalAppDimensions.dimen16),
-        elevation = CardDefaults.cardElevation(),
+        elevation = CardDefaults.cardElevation(LocalAppDimensions.dimen2),
         colors = cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        NewsDetailTitle(newsDetail?.newsTitle)
-        NewsDetailDescription(newsDetail?.newsDescription)
-        NewsDetailImage(newsDetail?.newsImageLink)
-        Spacer(modifier = Modifier.weight(1f))
-        NewsDetailFooter(
-            newsLink = newsDetail?.newsLink,
-            datePosted = newsDetail?.datePosted,
-            onOpenInBrowser = onOpenInBrowser
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+        ) {
+            NewsDetailTitle(newsDetail?.newsTitle)
+            NewsDetailDescription(newsDetail?.newsDescription)
+            NewsDetailImage(newsDetail?.newsImageLink)
+            Spacer(modifier = Modifier.weight(1f))
+            NewsDetailFooter(
+                newsLink = newsDetail?.newsLink,
+                datePosted = newsDetail?.datePosted,
+                onOpenInBrowser = onOpenInBrowser
+            )
+        }
     }
 }
 
@@ -129,7 +121,7 @@ private fun NewsDetailTitle(title: String?) {
             .fillMaxWidth()
             .padding(LocalAppDimensions.dimen16),
         textAlign = TextAlign.Start,
-        color = MaterialTheme.colorScheme.onSecondaryContainer,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -142,7 +134,7 @@ private fun NewsDetailDescription(description: String?) {
             .fillMaxWidth()
             .padding(horizontal = LocalAppDimensions.dimen16),
         textAlign = TextAlign.Start,
-        color = MaterialTheme.colorScheme.onSecondaryContainer,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -190,7 +182,7 @@ private fun NewsDetailFooter(
                     .fillMaxWidth()
                     .padding(LocalAppDimensions.dimen2),
                 textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         Text(
@@ -200,7 +192,7 @@ private fun NewsDetailFooter(
                 .fillMaxWidth()
                 .padding(LocalAppDimensions.dimen16),
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSecondaryContainer
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
