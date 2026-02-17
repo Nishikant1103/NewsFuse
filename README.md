@@ -6,19 +6,19 @@ NewsFuse is an Android application that aggregates and displays news articles fr
 The News Fuse app has following feature:
 1. The news list screen:
 - Displays a list of news articles with title, source name alias and post date from the selected rss feed source.
-![](/Users/nishikant.choudhary/Desktop/Screenshot 2026-02-17 at 18.43.48.png)
+![list_view.png](app/src/main/res/screenshots/list_view.png)
 2. The news details screen:
 - When clicked on a news item the user navigates to the news details screen which displays the news title, description, image(if available), post date and an link to the source article.
-![](/Users/nishikant.choudhary/Desktop/Screenshot 2026-02-17 at 18.45.51.png)
+![detail_view.png](app/src/main/res/screenshots/detail_view.png)
 3. News feeds management screen:
 - The user can add, delete and select news feed sources. 
 - Each news feed source has a name alias and a rss feed url. 
 - The user can also select only one news feed source at this point to view its news articles.
 - There is no possibility to edit a news feed source at this point.
 - In case user tries to add an invalid rss feed url, an error message is shown to the user.
-![](/Users/nishikant.choudhary/Desktop/Screenshot 2026-02-17 at 18.45.14.png)
+![news_feeds_list_view.png](app/src/main/res/screenshots/news_feeds_list_view.png)
 
-![](/Users/nishikant.choudhary/Desktop/Screenshot 2026-02-17 at 18.45.01.png)
+![add_feed_view.png](app/src/main/res/screenshots/add_feed_view.png)
 
 Additional features include:
 - Offline support using Room database
