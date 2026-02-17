@@ -260,14 +260,11 @@ fun FeedsItem(feed: NewsFeed) {
             BorderStroke(1.dp, MaterialTheme.colorScheme.secondary)
         } else null,
         colors = cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
-        val textColor = if (feed.selected) {
-            MaterialTheme.colorScheme.onTertiaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        }
+        val textColor = MaterialTheme.colorScheme.onSurfaceVariant
+
         Text(
             text = feed.feedName,
             style = MaterialTheme.typography.titleMedium,
