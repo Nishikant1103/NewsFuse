@@ -42,7 +42,7 @@ import com.example.newsfuse.datasource.data.News
 
 
 @Composable
-fun NewsDetailScreen(newsId: String, paddingValues: PaddingValues) {
+fun NewsDetailScreen(newsId: Int, paddingValues: PaddingValues) {
     val context = LocalContext.current
     val viewModel = remember { Injector.getNewsDetailViewModel(context) }
     val newsDetail by viewModel.newsDetail(newsId).collectAsState()

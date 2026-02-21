@@ -21,7 +21,7 @@ class NewsRepository(
             }?.toSet() ?: emptySet()
         }
 
-    fun getNewsById(newsId: String): Flow<NewsEntity?> = newsDao.getNewsEntityById(newsId)
+    fun getNewsById(newsId: Int): Flow<NewsEntity?> = newsDao.getNewsEntityById(newsId)
 
     fun getSelectedFeed(): Flow<NewsFeedEntity?> = feedsDao.getSelectedFeed()
 }

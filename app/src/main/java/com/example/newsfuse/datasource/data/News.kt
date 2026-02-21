@@ -13,7 +13,7 @@ import java.util.UUID
  * @property newsImageLink The URL link to the image associated with the news article.
  */
 data class News(
-    val id: String = UUID.randomUUID().toString(),
+    val id: Int,
     val datePosted: String?,
     val newsTitle: String,
     val newsDescription: String,

@@ -2,6 +2,7 @@ package com.example.newsfuse.datasource.remote
 
 import android.util.Log
 import com.example.newsfuse.datasource.data.News
+import com.example.newsfuse.datasource.data.RemoteNews
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -22,8 +23,8 @@ class NewsDataSource {
      * @param rssFeedUrl The URL of the RSS feed to fetch news from.
      * @return [Result.success] with a set of [News] if successful, or [Result.failure] with an exception otherwise.
      */
-    fun getNewsFromFeedUrl(rssFeedUrl: String): Result<Set<News>> {
-        val newsSet = mutableSetOf<News>()
+    fun getNewsFromFeedUrl(rssFeedUrl: String): Result<Set<RemoteNews>> {
+        val newsSet = mutableSetOf<RemoteNews>()
         val rssUrl = URL(rssFeedUrl)
         try {
             val document: Document =
@@ -53,8 +54,8 @@ class NewsDataSource {
      * @param element The Jsoup [Element] representing a single RSS feed item.
      * @return A [News] object containing the parsed data.
      */
-    private fun getNews(element: Element): News {
-        return News(
+    private fun getNews(element: Element): RemoteNews {
+        return RemoteNews(
             datePosted = element.allElements.select("pubDate").text(),
             newsTitle = element.allElements.select("title").text(),
             newsDescription = element.allElements.select("description").text(),

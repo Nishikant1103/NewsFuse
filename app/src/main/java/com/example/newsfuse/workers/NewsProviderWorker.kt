@@ -44,7 +44,6 @@ class NewsProviderWorker(
             val news = newsResult.getOrNull().orEmpty()
             val entities = news.map { item ->
                 NewsEntity(
-                    id = item.id,
                     datePosted = item.datePosted ?: "",
                     newsTitle = item.newsTitle,
                     newsDescription = item.newsDescription,

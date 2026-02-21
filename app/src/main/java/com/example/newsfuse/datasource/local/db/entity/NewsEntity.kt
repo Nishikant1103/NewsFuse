@@ -7,8 +7,8 @@ import com.example.newsfuse.datasource.data.News
 
 @Entity
 data class NewsEntity(
-    @PrimaryKey
-    val id: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val datePosted: String = "",
     val newsTitle: String = "",
     val newsDescription: String = "",

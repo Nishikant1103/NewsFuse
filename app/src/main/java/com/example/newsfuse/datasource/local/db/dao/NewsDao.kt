@@ -20,7 +20,7 @@ interface NewsDao {
     suspend fun insertNewsEntities(newsList: List<NewsEntity>)
 
     @Query("Select * from NewsEntity WHERE id = :newsId")
-    fun getNewsEntityById(newsId: String): Flow<NewsEntity?>
+    fun getNewsEntityById(newsId: Int): Flow<NewsEntity?>
 
     @Transaction
     suspend fun refreshNewsEntities(newsList: List<NewsEntity>) {

@@ -30,7 +30,7 @@ import com.example.newsfuse.core.ui.theme.LocalAppDimensions
 @Composable
 fun NewsListScreen(
     paddingValues: PaddingValues,
-    onNewsItemClicked: (newsId: String) -> Unit = {}
+    onNewsItemClicked: (newsId: Int) -> Unit = {}
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
     val viewModel = remember { Injector.getNewsListViewModel(context) }
@@ -53,7 +53,7 @@ private fun NewsListScreenContent(
     selectedFeedName: String?,
     paddingValues: PaddingValues,
     scrollState: androidx.compose.foundation.lazy.LazyListState,
-    onNewsItemClicked: (newsId: String) -> Unit
+    onNewsItemClicked: (newsId: Int) -> Unit
 ) {
     if (newsList.isEmpty()) {
         EmptyNewsListState(paddingValues)
@@ -89,7 +89,7 @@ private fun NewsListLazyColumn(
     selectedFeedName: String?,
     paddingValues: PaddingValues,
     scrollState: androidx.compose.foundation.lazy.LazyListState,
-    onNewsItemClicked: (newsId: String) -> Unit
+    onNewsItemClicked: (newsId: Int) -> Unit
 ) {
     LazyColumn(state = scrollState, modifier = Modifier.padding(paddingValues)) {
         itemsIndexed(newsList.toList(), key = { _, news -> news.hashCode() }) { _, news ->
@@ -106,7 +106,7 @@ private fun NewsListLazyColumn(
 private fun NewsListItem(
     news: com.example.newsfuse.datasource.data.News,
     selectedFeedName: String?,
-    onNewsItemClicked: (newsId: String) -> Unit
+    onNewsItemClicked: (newsId: Int) -> Unit
 ) {
     Card(
         modifier = Modifier

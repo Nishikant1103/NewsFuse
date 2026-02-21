@@ -142,7 +142,7 @@ private fun AddFeedButton(enabled: Boolean, onClick: () -> Unit) {
         enabled = enabled,
         onClick = onClick
     ) {
-        Text(stringResource(R.string.add_feed_button))
+        Text(stringResource(R.string.add_feed_button), color = MaterialTheme.colorScheme.onPrimary)
     }
 }
 

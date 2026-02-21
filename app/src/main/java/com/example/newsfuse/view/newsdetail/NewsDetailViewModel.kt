@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
 class NewsDetailViewModel(private val repository: NewsRepository) : ViewModel() {
-    fun newsDetail(newsId: String): StateFlow<News?> =
+    fun newsDetail(newsId: Int): StateFlow<News?> =
         repository.getNewsById(newsId).map {
             it?.toNews()
         }.stateIn(

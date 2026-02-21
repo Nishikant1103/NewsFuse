@@ -29,8 +29,8 @@ fun NFuseNavHost(navController: NavHostController, innerPadding: PaddingValues,
 
         composable<Routes.NewsDetail> { backStackEntry ->
             val newsId =
-                backStackEntry.arguments?.getString("newsId") ?: ""
-            if (!newsId.isEmpty()) {
+                backStackEntry.arguments?.getInt("newsId") ?: -1
+            if (newsId != -1) {
                 NewsDetailScreen(
                     newsId,
                     paddingValues = innerPadding
@@ -58,7 +58,7 @@ sealed class Routes {
     object NewsList : Routes()
 
     @Serializable
-    data class NewsDetail(val newsId: String) : Routes()
+    data class NewsDetail(val newsId: Int) : Routes()
 
     @Serializable
     object NewsFeeds : Routes()
